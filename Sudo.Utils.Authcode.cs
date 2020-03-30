@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Text;
 using Sudo.Common;
@@ -129,7 +129,7 @@ namespace Sudo.Utils
             if (source.Code == AuthcodeError.Ok)
             {
                 string[] original = source.Result.Split(new char[] { separator });
-                if (original.Length < pos + 1) return null;
+                if (original.Length < pos + 1) return GetAuthcodeResult(AuthcodeError.Empty);
                 return GetAuthcodeResult(AuthcodeError.Ok,original[pos]);
             }
             return source;
@@ -377,52 +377,55 @@ namespace Sudo.Utils
         {
             TimeSpan toNow = new TimeSpan(DateTime.Now.ToUniversalTime().Ticks - FROM_1970101);
             string timeStamp = toNow.Ticks.ToString();
-            return long.Parse(timeStamp[0..^7]);
+            return long.Parse(timeStamp.Substring(0, timeStamp.Length - 7));
+            //return long.Parse(timeStamp[0..^7]);
         }
         #endregion
-        #region 类型
-        /// <summary>
-        /// 加解密类型
-        /// </summary>
-        public enum AuthcodeMode
-        {
-            [Description("加密")]
-            Encode = 1,
-            [Description("解密")]
-            Decode = 2
-        };
-        /// <summary>
-        /// 加解密错误类型
-        /// </summary>
-        [Flags]
-        public enum AuthcodeError
-        {
-
-            [Description("正常")]
-            Ok = 1,
-            [Description("发生未知错误")]
-            Error = 2,
-            [Description("密钥或者源字符串为空")]
-            Empty = 4,
-            [Description("加密字符串已经过期")]
-            Expriry = 8
-        };
-        /// <summary>
-        /// 加解密返回结果
-        /// </summary>
-        public class AuthcodeResult
-        {
-            /// <summary>
-            /// 错误代码
-            /// </summary>
-            [Description("错误代码")]
-            public AuthcodeError Code;
-            /// <summary>
-            /// 返回值
-            /// </summary>
-            [Description("返回值")]
-            public string Result;
-        };
-        #endregion
     }
+
+    #region 类型
+    /// <summary>
+    /// 加解密类型
+    /// </summary>
+    public enum AuthcodeMode
+    {
+        [Description("加密")]
+        Encode = 1,
+        [Description("解密")]
+        Decode = 2
+    };
+    /// <summary>
+    /// 加解密错误类型
+    /// </summary>
+    [Flags]
+    public enum AuthcodeError
+    {
+
+        [Description("正常")]
+        Ok = 1,
+        [Description("发生未知错误")]
+        Error = 2,
+        [Description("密钥或者源字符串为空")]
+        Empty = 4,
+        [Description("加密字符串已经过期")]
+        Expriry = 8
+    };
+    /// <summary>
+    /// 加解密返回结果
+    /// </summary>
+    public class AuthcodeResult
+    {
+        /// <summary>
+        /// 错误代码
+        /// </summary>
+        [Description("错误代码")]
+        public AuthcodeError Code;
+        /// <summary>
+        /// 返回值
+        /// </summary>
+        [Description("返回值")]
+        public string Result;
+    };
+    #endregion
+
 }
